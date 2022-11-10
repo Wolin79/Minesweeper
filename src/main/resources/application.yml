@@ -1,0 +1,10 @@
+spring:
+  main:
+    banner-mode: off
+
+minesweeper:
+  defRowsCount: 10
+  defColumnsCount: 10
+  defMinesCount: 10
+  maxRowsCount: 30
+  maxColumnsCount: 30
