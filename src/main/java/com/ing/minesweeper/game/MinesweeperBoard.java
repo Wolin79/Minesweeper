@@ -47,7 +47,6 @@ public class MinesweeperBoard {
         }
     }
 
-
     public void flagCell(int rowNo, int colNo) {
         var cell = getCellOrThrow(rowNo, colNo);
         if (!cell.isOpened()) {
@@ -57,6 +56,15 @@ public class MinesweeperBoard {
             }
             cell.setFlagged(true);
         }
+    }
+
+    public void reset() {
+        iterator().forEachRemaining(row -> {
+            row.iterator().forEachRemaining(cell -> {
+                cell.setFlagged(false);
+                cell.setOpened(false);
+            });
+        });
     }
 
     private MinesweeperBoardCell getCellOrThrow(int rowNo, int colNo) {
@@ -72,8 +80,8 @@ public class MinesweeperBoard {
         //Mine random cells
         var minedCells = 0;
         while (minedCells < minesCount) {
-            var rowIndexToMine = ThreadLocalRandom.current().nextInt(0, rowsCount-1);
-            var columnIndexToMine = ThreadLocalRandom.current().nextInt(0, columnsCount-1);
+            var rowIndexToMine = ThreadLocalRandom.current().nextInt(rowsCount);
+            var columnIndexToMine = ThreadLocalRandom.current().nextInt(columnsCount);
             var rowToMine = rows.get(rowIndexToMine);
             var cellToMine = rowToMine.getCell(columnIndexToMine).get();
             if (!cellToMine.isMine()) {
