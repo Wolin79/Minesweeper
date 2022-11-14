@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 @NoArgsConstructor
 @ConfigurationProperties("minesweeper")
-public class MinesweeperProperties {
+public class MinesweeperGameProperties {
     private int defRowsCount;
     private int defColumnsCount;
     private int defMinesCount;

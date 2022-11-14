@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class MinesweeperGame {
 
-    private final MinesweeperProperties properties;
+    private final MinesweeperGameProperties properties;
 
     @Getter
     private MinesweeperBoard board;
@@ -18,7 +18,7 @@ public class MinesweeperGame {
     @Getter
     private MinesweeperGameStatus status;
 
-    public MinesweeperGame(MinesweeperProperties properties) {
+    public MinesweeperGame(MinesweeperGameProperties properties) {
         this.properties = properties;
         init(properties.getDefRowsCount(), properties.getDefColumnsCount(), properties.getDefMinesCount());
     }
@@ -50,6 +50,7 @@ public class MinesweeperGame {
             status = MinesweeperGameStatus.OPEN;
         }
         catch (MinesweeperException e) {
+            status = MinesweeperGameStatus.NOT_INITIALIZED;
             info = e.getMessage();
         }
     }
@@ -62,31 +63,31 @@ public class MinesweeperGame {
 
     public void open(int rowNo, int colNo) {
         if (status != MinesweeperGameStatus.OPEN) {
-            info = "Game over.";
+            info = getDefInfoForStatus(status);
         }
-
-        try {
-            board.openCell(rowNo, colNo);
-            checkForVictory();
-        }
-        catch (MinesweeperMineHitException e) {
-            status = MinesweeperGameStatus.DEFEAT;
-            info = "You lose: " + e.getMessage();
+        else {
+            try {
+                board.openCell(rowNo, colNo);
+                checkForVictory();
+            } catch (MinesweeperMineHitException e) {
+                status = MinesweeperGameStatus.DEFEAT;
+                info = "You lose: " + e.getMessage();
+            }
         }
     }
 
     public void flag(int rowNo, int colNo) {
         if (status != MinesweeperGameStatus.OPEN) {
-            info = "Game over.";
+            info = getDefInfoForStatus(status);
         }
-
-        try {
-            board.flagCell(rowNo, colNo);
-            checkForVictory();
-        }
-        catch (MinesweeperInvalidFlagException e) {
-            status = MinesweeperGameStatus.DEFEAT;
-            info = "You lose: " + e.getMessage();
+        else {
+            try {
+                board.flagCell(rowNo, colNo);
+                checkForVictory();
+            } catch (MinesweeperInvalidFlagException e) {
+                status = MinesweeperGameStatus.DEFEAT;
+                info = "You lose: " + e.getMessage();
+            }
         }
     }
 
@@ -95,5 +96,14 @@ public class MinesweeperGame {
             status = MinesweeperGameStatus.VICTORY;
             info = "You win!!!";
         }
+    }
+
+    private String getDefInfoForStatus(MinesweeperGameStatus status) {
+        return switch (status) {
+            case NOT_INITIALIZED -> "Please start new game";
+            case OPEN -> "Game is open";
+            case DEFEAT -> "You loose - please start new game or reset current board";
+            case VICTORY -> "You win - please start new game or reset current board";
+        };
     }
 }

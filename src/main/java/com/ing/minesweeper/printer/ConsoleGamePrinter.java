@@ -5,15 +5,13 @@ import com.ing.minesweeper.game.MinesweeperBoardRow;
 import com.ing.minesweeper.game.MinesweeperGame;
 import org.springframework.stereotype.Component;
 
-import java.util.Iterator;
-
 @Component
 public class ConsoleGamePrinter implements MinesweeperGamePrinter {
 
     public String print(MinesweeperGame game) {
-        StringBuffer result = new StringBuffer();
+        var result = new StringBuffer();
         printHeader(result, game.getBoard().getColumnsCount());
-        Iterator<MinesweeperBoardRow> rowsIterator = game.getBoard().iterator();
+        var rowsIterator = game.getBoard().iterator();
         int rowNo = 1;
         while (rowsIterator.hasNext()) {
             printRow(result, rowsIterator.next(), rowNo++);
@@ -50,7 +48,7 @@ public class ConsoleGamePrinter implements MinesweeperGamePrinter {
     }
 
     private void printRow(StringBuffer result, MinesweeperBoardRow row, int rowNo) {
-        Iterator<MinesweeperBoardCell> cellsIterator = row.iterator();
+        var cellsIterator = row.iterator();
         result.append(String.format("%2d ", rowNo));
         cellsIterator.forEachRemaining(cell -> result.append("| " + printCell(cell) + " "));
         result.append("|\n");

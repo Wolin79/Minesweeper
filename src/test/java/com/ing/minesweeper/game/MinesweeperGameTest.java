@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class MinesweeperGameTest {
 
-    final private MinesweeperProperties properties = new MinesweeperProperties(5, 5, 1, 10, 10);
+    final private MinesweeperGameProperties properties = new MinesweeperGameProperties(5, 5, 1, 10, 10);
 
     private MinesweeperGame game;
 

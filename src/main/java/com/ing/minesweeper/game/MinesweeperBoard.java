@@ -13,10 +13,13 @@ import java.util.concurrent.ThreadLocalRandom;
 public class MinesweeperBoard {
 
     private final ArrayList<MinesweeperBoardRow> rows;
+
     @Getter
     private final int rowsCount;
+
     @Getter
     private final int columnsCount;
+
     @Getter
     private final int minesCount;
 
@@ -114,8 +117,9 @@ public class MinesweeperBoard {
     private void increaseMineCountInAdjacentCells(int rowNo, int columnNo) {
         for (int rowIndex=rowNo-1; rowIndex<=rowNo+1; rowIndex++) {
             for (int cellIndex=columnNo-1; cellIndex<=columnNo+1; cellIndex++) {
+                //For use in lambda
                 final int index = cellIndex;
-                getRow(rowIndex).ifPresent(row -> row.getCell(index).map(MinesweeperBoardCell::increaseNoOfAdjacentMines));
+                getRow(rowIndex).ifPresent(row -> row.getCell(index).ifPresent(cell -> cell.setNoOfAdjacentMines(cell.getNoOfAdjacentMines()+1)));
             }
         }
     }

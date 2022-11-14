@@ -8,9 +8,9 @@ public class MinesweeperBoardRow {
 
     private final ArrayList<MinesweeperBoardCell> cells;
 
-    public MinesweeperBoardRow(int cellNo) {
-        this.cells = new ArrayList<>(cellNo);
-        for (int i=0; i<cellNo; i++) {
+    public MinesweeperBoardRow(int cellsCount) {
+        this.cells = new ArrayList<>(cellsCount);
+        for (int i=0; i<cellsCount; i++) {
             cells.add(new MinesweeperBoardCell(false, false, false, 0));
         }
     }

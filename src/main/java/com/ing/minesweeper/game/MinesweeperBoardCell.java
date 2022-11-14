@@ -10,8 +10,4 @@ public class MinesweeperBoardCell {
     private boolean flagged;
     private boolean mine;
     private int noOfAdjacentMines;
-
-    public int increaseNoOfAdjacentMines() {
-        return noOfAdjacentMines++;
-    }
 }
