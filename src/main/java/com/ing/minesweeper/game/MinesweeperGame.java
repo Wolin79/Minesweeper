@@ -1,8 +1,8 @@
 package com.ing.minesweeper.game;
 
-import com.ing.minesweeper.errors.MinesweeperBoomException;
 import com.ing.minesweeper.errors.MinesweeperException;
 import com.ing.minesweeper.errors.MinesweeperInvalidFlagException;
+import com.ing.minesweeper.errors.MinesweeperMineHitException;
 import lombok.Getter;
 import org.springframework.stereotype.Component;
 
@@ -25,12 +25,12 @@ public class MinesweeperGame {
 
     public void init(int rowsCount, int columnsCount, int minesCount) {
         try {
-            if (rowsCount <= 1) {
-                throw new MinesweeperException("Minimum number of rows is 2");
+            if (rowsCount < 1) {
+                throw new MinesweeperException("Minimum number of rows is 1");
             }
 
-            if (columnsCount <= 1) {
-                throw new MinesweeperException("Minimum number of column is 2");
+            if (columnsCount < 1) {
+                throw new MinesweeperException("Minimum number of column is 1");
             }
 
             if (minesCount <= 0) {
@@ -60,15 +60,16 @@ public class MinesweeperGame {
         status = MinesweeperGameStatus.OPEN;
     }
 
-    public void openCell(int rowNo, int colNo) {
+    public void open(int rowNo, int colNo) {
         if (status != MinesweeperGameStatus.OPEN) {
             info = "Game over.";
         }
 
         try {
             board.openCell(rowNo, colNo);
+            checkForVictory();
         }
-        catch (MinesweeperBoomException e) {
+        catch (MinesweeperMineHitException e) {
             status = MinesweeperGameStatus.DEFEAT;
             info = "You lose: " + e.getMessage();
         }
@@ -81,10 +82,18 @@ public class MinesweeperGame {
 
         try {
             board.flagCell(rowNo, colNo);
+            checkForVictory();
         }
         catch (MinesweeperInvalidFlagException e) {
             status = MinesweeperGameStatus.DEFEAT;
             info = "You lose: " + e.getMessage();
+        }
+    }
+
+    private void checkForVictory() {
+        if (board.isAllOpened()) {
+            status = MinesweeperGameStatus.VICTORY;
+            info = "You win!!!";
         }
     }
 }

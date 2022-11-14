@@ -1,8 +1,8 @@
 package com.ing.minesweeper.game;
 
-import com.ing.minesweeper.errors.MinesweeperBoomException;
 import com.ing.minesweeper.errors.MinesweeperException;
 import com.ing.minesweeper.errors.MinesweeperInvalidFlagException;
+import com.ing.minesweeper.errors.MinesweeperMineHitException;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -42,7 +42,7 @@ public class MinesweeperBoard {
         if (!cell.isOpened()) {
             cell.setOpened(true);
             if (cell.isMine()) {
-                throw new MinesweeperBoomException("BOOM!!! Given cell is mined!");
+                throw new MinesweeperMineHitException("BOOM!!! Given cell is mined!");
             }
         }
     }
@@ -67,7 +67,25 @@ public class MinesweeperBoard {
         });
     }
 
-    private MinesweeperBoardCell getCellOrThrow(int rowNo, int colNo) {
+    public boolean isAllOpened() {
+        for (int rowIndex=1; rowIndex<=rowsCount; rowIndex++) {
+            for (int colIndex = 1; colIndex <= columnsCount; colIndex++) {
+                if (!getCellOrThrow(rowIndex, colIndex).isOpened()) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    protected Optional<MinesweeperBoardRow> getRow(int index) {
+        if (index < 0 || index >= rows.size()) {
+            return Optional.empty();
+        }
+        return Optional.of(rows.get(index));
+    }
+
+    protected MinesweeperBoardCell getCellOrThrow(int rowNo, int colNo) {
         var row = getRow(rowNo-1).orElseThrow(() -> new MinesweeperException("Invalid row number!"));
         return row.getCell(colNo-1).orElseThrow(() -> new MinesweeperException("Invalid column number!"));
     }
@@ -97,19 +115,8 @@ public class MinesweeperBoard {
         for (int rowIndex=rowNo-1; rowIndex<=rowNo+1; rowIndex++) {
             for (int cellIndex=columnNo-1; cellIndex<=columnNo+1; cellIndex++) {
                 final int index = cellIndex;
-                getRow(rowIndex).map(row -> {
-                    row.getCell(index).map(MinesweeperBoardCell::increaseNoOfAdjacentMines);
-                    return null;
-                });
+                getRow(rowIndex).ifPresent(row -> row.getCell(index).map(MinesweeperBoardCell::increaseNoOfAdjacentMines));
             }
         }
     }
-
-    private Optional<MinesweeperBoardRow> getRow(int index) {
-        if (index < 0 || index >= rows.size()) {
-            return Optional.empty();
-        }
-        return Optional.of(rows.get(index));
-    }
-
 }

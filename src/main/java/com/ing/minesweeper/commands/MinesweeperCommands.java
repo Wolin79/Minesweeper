@@ -34,7 +34,7 @@ public class MinesweeperCommands {
 
     @ShellMethod("Open given cell")
     public String open(int rowNo, int colNo) {
-        game.openCell(rowNo, colNo);
+        game.open(rowNo, colNo);
         return printer.print(game);
     }
 
